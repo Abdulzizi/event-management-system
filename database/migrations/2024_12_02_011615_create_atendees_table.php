@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('atendees', function (Blueprint $table) {
-            $table->uuid()->primary();
+            $table->uuid("id")->primary();
 
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Event::class);

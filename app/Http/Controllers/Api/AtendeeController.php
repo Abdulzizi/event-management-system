@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Atendee;
 use Illuminate\Http\Request;
 
 class AtendeeController extends Controller
@@ -12,7 +13,7 @@ class AtendeeController extends Controller
      */
     public function index()
     {
-        //
+        // 
     }
 
     /**

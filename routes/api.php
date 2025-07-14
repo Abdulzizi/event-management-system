@@ -15,3 +15,9 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/events.atendees', AtendeeController::class)
         ->scoped(['atendee' => 'event']);
 });
+
+Route::fallback(function () {
+    return response()->json([
+        'message' => 'Not Found'
+    ], 404);
+});

@@ -14,10 +14,10 @@ class Event extends Model
     use HasUuids;
 
     protected $fillable = [
-        'event_name',
-        'event_description',
-        'start_time',
-        'end_time',
+        'name',
+        'description',
+        'start_date',
+        'end_date',
     ];
 
     function user(): BelongsTo

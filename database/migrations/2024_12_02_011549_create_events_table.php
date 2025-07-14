@@ -13,15 +13,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->uuid()->primary();
+            $table->uuid("id")->primary();
 
             $table->foreignIdFor(User::class);
 
-            $table->string('event_name');
-            $table->text('event_description');
+            $table->string('name');
+            $table->text('description');
 
-            $table->dateTime('start_time');
-            $table->dateTime('end_time');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
 
             $table->timestamps();
         });
