@@ -3,49 +3,50 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Event\EventRequest;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
+        $page = request('page', 1);
+        $perPage = request('perPage', 15);
+
         return response()->json([
             'success' => true,
-            'data' => Event::paginate(15)
+            'data' => Event::paginate($perPage, ['*'], 'page', $page)
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(EventRequest $request)
     {
-        //
+        /**
+         * Menampilkan pesan error ketika validasi gagal
+         * pengaturan validasi bisa dilihat pada class app/Http/request/User/CreateRequest
+         */
+        if (isset($request->validator) && $request->validator->fails()) {
+            return response()->failed($request->validator->errors());
+        }
+
+        $payload = $request->only(['user_id', 'name', 'description', 'start_date', 'end_date']);
+
+        $event = Event::create($payload);
+
+        return response()->success($event, 'Event berhasil dibuat');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         //

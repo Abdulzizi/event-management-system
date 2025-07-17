@@ -10,7 +10,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(function () {
-    Route::apiResource('/events', EventController::class);
+    Route::get('/events', [EventController::class, 'index']);
+    Route::post('/events', [EventController::class, 'store']);
 
     Route::apiResource('/events.atendees', AtendeeController::class)
         ->scoped(['atendee' => 'event']);
