@@ -40,19 +40,19 @@ class EventRequest extends FormRequest
             'user_id' => 'required|exists:users,id',
             'name' => 'required|max:100',
             'description' => 'nullable|max:255',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
+            'start_date' => 'required|date|before:end_date',
+            'end_date' => 'required|date|after:start_date',
         ];
     }
 
     private function updateRules(): array
     {
         return [
-            'user_id' => 'nullable|required|exists:users,id',
-            'name' => 'nullable|required|max:100',
-            'description' => 'nullable|required',
-            'start_date' => 'nullable|required|date',
-            'end_date' => 'nullable|required|date',
+            'user_id' => 'nullable|exists:users,id',
+            'name' => 'nullable|max:100',
+            'description' => 'nullable|max:255',
+            'start_date' => 'nullable|date|before:end_date',
+            'end_date' => 'nullable|date|after:start_date',
         ];
     }
 }
