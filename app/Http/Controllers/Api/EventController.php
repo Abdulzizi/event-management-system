@@ -4,20 +4,30 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\EventRequest;
+use App\Http\Resources\Event\EventResource;
 use App\Models\Event;
-use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
     public function index()
     {
         $page = request('page', 1);
-        $perPage = request('perPage', 15);
+        $perPage = request('perPage', 10);
 
-        return response()->json([
-            'success' => true,
-            'data' => Event::paginate($perPage, ['*'], 'page', $page)
-        ]);
+        $event = Event::paginate($perPage, ['*'], 'page', $page);
+
+        return response()->success([
+            'list' => EventResource::collection($event),
+            'meta' => [
+                'total' => $event->total(),
+                'per_page' => $event->perPage(),
+                'current_page' => $event->currentPage(),
+                'last_page' => $event->lastPage(),
+                'from' => $event->firstItem(),
+                'to' => $event->lastItem(),
+                'has_more_pages' => $event->hasMorePages(),
+            ],
+        ], 'List Event berhasil ditemukan');
     }
 
     public function store(EventRequest $request)
@@ -30,7 +40,13 @@ class EventController extends Controller
             return response()->failed($request->validator->errors());
         }
 
-        $payload = $request->only(['user_id', 'name', 'description', 'start_date', 'end_date']);
+        $payload = $request->only([
+            'user_id',
+            'name',
+            'description',
+            'start_date',
+            'end_date'
+        ]);
 
         $event = Event::create($payload);
 
@@ -39,13 +55,13 @@ class EventController extends Controller
 
     public function show(string $id)
     {
-        $event = Event::find($id);
+        $event = Event::with('user')->find($id);
 
         if (!$event) {
             return response()->failed('Event tidak ditemukan');
         }
 
-        return response()->success($event, 'Event berhasil ditemukan');
+        return response()->success(new EventResource($event), 'Event berhasil ditemukan');
     }
 
     public function update(EventRequest $request, string $id)
@@ -58,7 +74,13 @@ class EventController extends Controller
             return response()->failed($request->validator->errors());
         }
 
-        $payload = $request->only(['user_id', 'name', 'description', 'start_date', 'end_date']);
+        $payload = $request->only([
+            'user_id',
+            'name',
+            'description',
+            'start_date',
+            'end_date'
+        ]);
         $event = Event::find($id);
 
         if (!$event) {

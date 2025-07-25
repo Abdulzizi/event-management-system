@@ -48,11 +48,11 @@ class EventRequest extends FormRequest
     private function updateRules(): array
     {
         return [
-            'user_id' => 'nullable|exists:users,id',
-            'name' => 'nullable|max:100',
-            'description' => 'nullable|max:255',
-            'start_date' => 'nullable|date|before:end_date',
-            'end_date' => 'nullable|date|after:start_date',
+            'user_id' => 'sometimes|exists:users,id',
+            'name' => 'sometimes|max:100',
+            'description' => 'sometimes|max:255',
+            'start_date' => 'sometimes|date|before:end_date',
+            'end_date' => 'sometimes|date|after:start_date',
         ];
     }
 }
