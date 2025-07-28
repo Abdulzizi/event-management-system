@@ -5,21 +5,17 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Event\EventRequest;
 use App\Http\Resources\Event\EventResource;
+use App\Http\Traits\CanLoadRelationship;
 use App\Models\Event;
 
 class EventController extends Controller
 {
+    use CanLoadRelationship;
+
     public function index()
     {
-        $query = Event::query();
         $relations = ['user', 'atendees', 'atendees.user'];
-
-        foreach ($relations as $relation) {
-            $query->when(
-                $this->relationShouldLoad($relation),
-                fn($q) => $q->with($relation)
-            );
-        }
+        $query = $this->loadRelationShip(Event::query(), $relations);
 
         $page = request('page', 1);
         $perPage = request('perPage', 10);
@@ -42,19 +38,6 @@ class EventController extends Controller
                 'per_page' => $event->perPage(),
             ],
         ], 'List Event berhasil ditemukan');
-    }
-
-    protected function relationShouldLoad(string $relation): bool
-    {
-        $include = request()->query('include');
-
-        if (!$include) {
-            return false;
-        }
-
-        $relations = array_map('trim', explode(',', $include));
-
-        return in_array($relation, $relations);
     }
 
     public function store(EventRequest $request)
