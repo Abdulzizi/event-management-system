@@ -12,6 +12,11 @@ class Atendee extends Model
     use HasFactory;
     use HasUuids;
 
+    protected $fillable = [
+        'user_id',
+        'event_id'
+    ];
+
     function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

@@ -16,7 +16,8 @@ class AtendeeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-
+            'user_id' => $this->user_id,
+            'event_id' => $this->event_id
         ];
     }
 }

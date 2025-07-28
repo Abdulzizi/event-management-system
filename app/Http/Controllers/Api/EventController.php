@@ -19,13 +19,17 @@ class EventController extends Controller
         return response()->success([
             'list' => EventResource::collection($event),
             'meta' => [
+                // 'total' => $event->total(),
+                // 'per_page' => $event->perPage(),
+                // 'current_page' => $event->currentPage(),
+                // 'last_page' => $event->lastPage(),
+                // 'from' => $event->firstItem(),
+                // 'to' => $event->lastItem(),
+                // 'has_more_pages' => $event->hasMorePages(),
                 'total' => $event->total(),
-                'per_page' => $event->perPage(),
-                'current_page' => $event->currentPage(),
                 'last_page' => $event->lastPage(),
-                'from' => $event->firstItem(),
-                'to' => $event->lastItem(),
-                'has_more_pages' => $event->hasMorePages(),
+                'current_page' => $event->currentPage(),
+                'per_page' => $event->perPage(),
             ],
         ], 'List Event berhasil ditemukan');
     }
