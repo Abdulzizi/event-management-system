@@ -11,10 +11,20 @@ class EventController extends Controller
 {
     public function index()
     {
+        $query = Event::query();
+        $relations = ['user', 'atendees', 'atendees.user'];
+
+        foreach ($relations as $relation) {
+            $query->when(
+                $this->relationShouldLoad($relation),
+                fn($q) => $q->with($relation)
+            );
+        }
+
         $page = request('page', 1);
         $perPage = request('perPage', 10);
 
-        $event = Event::paginate($perPage, ['*'], 'page', $page);
+        $event = $query->latest()->paginate($perPage, ['*'], 'page', $page);
 
         return response()->success([
             'list' => EventResource::collection($event),
@@ -32,6 +42,19 @@ class EventController extends Controller
                 'per_page' => $event->perPage(),
             ],
         ], 'List Event berhasil ditemukan');
+    }
+
+    protected function relationShouldLoad(string $relation): bool
+    {
+        $include = request()->query('include');
+
+        if (!$include) {
+            return false;
+        }
+
+        $relations = array_map('trim', explode(',', $include));
+
+        return in_array($relation, $relations);
     }
 
     public function store(EventRequest $request)

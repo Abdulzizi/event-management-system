@@ -17,13 +17,13 @@ class Atendee extends Model
         'event_id'
     ];
 
-    function user(): BelongsTo
+    public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     function event(): BelongsTo
     {
-        return $this->belongsTo(Event::class);
+        return $this->belongsTo(Event::class, 'event_id', 'id');
     }
 }
