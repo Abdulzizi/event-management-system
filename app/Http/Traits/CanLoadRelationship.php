@@ -5,13 +5,14 @@ namespace App\Http\Traits;
 use Illuminate\Contracts\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Contracts\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait CanLoadRelationship
 {
     public function loadRelationShip(
         Model|EloquentBuilder|QueryBuilder $for,
         ?array $relations = null
-    ): Model|EloquentBuilder|QueryBuilder {
+    ): Model|EloquentBuilder|QueryBuilder|HasMany {
         $relations = $relations ?? $this->relations ?? [];
 
         foreach ($relations as $relation) {

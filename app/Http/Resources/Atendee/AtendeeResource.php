@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Atendee;
 
+use App\Http\Resources\Event\EventResource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,6 +21,7 @@ class AtendeeResource extends JsonResource
             'user_id' => $this->user_id,
             'event_id' => $this->event_id,
             'user' => new UserResource($this->whenLoaded('user')),
+            'event' => new EventResource($this->whenLoaded('event')),
         ];
     }
 }

@@ -4,12 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Atendee\AtendeeResource;
+use App\Http\Traits\CanLoadRelationship;
 use App\Models\Atendee;
 use Illuminate\Http\Request;
 
 class AtendeeController extends Controller
 {
+
+    use CanLoadRelationship;
+
     protected $atendeeModel;
+
+    private $relations = ['user'];
 
     public function __construct()
     {
@@ -21,10 +27,12 @@ class AtendeeController extends Controller
      */
     public function index()
     {
+        $query = $this->loadRelationShip(Atendee::query(), $this->relations);
+
         $perPage = request('perPage', 10);
         $page = request('page', 1);
 
-        $atendee = $this->atendeeModel->paginate($perPage, ['*'], 'page', $page);
+        $atendee = $query->latest()->paginate($perPage, ['*'], 'page', $page);
 
         return response()->success([
             'list' => AtendeeResource::collection($atendee),
@@ -50,7 +58,15 @@ class AtendeeController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $atendee = $this->atendeeModel->find($id);
+
+        if (!$atendee) {
+            return response()->failed('Atendee tidak ditemukan');
+        }
+
+        $this->loadRelationShip($atendee);
+
+        return response()->success(new AtendeeResource($atendee), 'Atendee berhasil ditemukan');
     }
 
     /**

@@ -12,10 +12,12 @@ class EventController extends Controller
 {
     use CanLoadRelationship;
 
+    private $relations = ['user', 'atendees', 'atendees.user'];
+
+
     public function index()
     {
-        $relations = ['user', 'atendees', 'atendees.user'];
-        $query = $this->loadRelationShip(Event::query(), $relations);
+        $query = $this->loadRelationShip(Event::query(), $this->relations);
 
         $page = request('page', 1);
         $perPage = request('perPage', 10);
@@ -25,13 +27,6 @@ class EventController extends Controller
         return response()->success([
             'list' => EventResource::collection($event),
             'meta' => [
-                // 'total' => $event->total(),
-                // 'per_page' => $event->perPage(),
-                // 'current_page' => $event->currentPage(),
-                // 'last_page' => $event->lastPage(),
-                // 'from' => $event->firstItem(),
-                // 'to' => $event->lastItem(),
-                // 'has_more_pages' => $event->hasMorePages(),
                 'total' => $event->total(),
                 'last_page' => $event->lastPage(),
                 'current_page' => $event->currentPage(),
@@ -60,16 +55,20 @@ class EventController extends Controller
 
         $event = Event::create($payload);
 
+        $this->loadRelationShip($event);
+
         return response()->success($event, 'Event berhasil dibuat');
     }
 
     public function show(string $id)
     {
-        $event = Event::with('user')->find($id);
+        $event = Event::find($id);
 
         if (!$event) {
             return response()->failed('Event tidak ditemukan');
         }
+
+        $this->loadRelationShip($event);
 
         return response()->success(new EventResource($event), 'Event berhasil ditemukan');
     }
@@ -99,7 +98,9 @@ class EventController extends Controller
 
         $event->update($payload);
 
-        return response()->success($event, 'Event berhasil diperbarui');
+        $this->loadRelationShip($event);
+
+        return response()->success($event, 'Event berhasil diupdate');
     }
 
     public function destroy(string $id)
