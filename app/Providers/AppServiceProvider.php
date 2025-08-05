@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Atendee;
+use App\Models\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
 
@@ -59,6 +62,14 @@ class AppServiceProvider extends ServiceProvider
             $signature = (openssl_public_encrypt(json_encode($content), $encrypted, $publicKey)) ? base64_encode($encrypted) : null;
 
             return Response::make($content, $httpCode, ['signature' => $signature]);
+        });
+
+        Gate::define('update-event', function ($user, Event $event) {
+            return $user->id === $event->user_id;
+        });
+
+        Gate::define('delete-atendee', function ($user, Atendee $atendee, Event $event) {
+            return $user->id === $event->user_id || $user->id === $atendee->user_id;
         });
     }
 

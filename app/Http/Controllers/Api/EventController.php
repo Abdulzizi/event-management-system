@@ -7,6 +7,7 @@ use App\Http\Requests\Event\EventRequest;
 use App\Http\Resources\Event\EventResource;
 use App\Http\Traits\CanLoadRelationship;
 use App\Models\Event;
+use Illuminate\Support\Facades\Gate;
 
 class EventController extends Controller
 {
@@ -90,10 +91,18 @@ class EventController extends Controller
             'start_date',
             'end_date'
         ]);
+
         $event = Event::find($id);
 
         if (!$event) {
-            return response()->failed('Event tidak ditemukan');
+            return response()->failed('Event tidak ditemukan', 404);
+        }
+
+        if (Gate::denies('update-event', $event)) {
+            return response()->json([
+                'status_code' => 403,
+                'message' => 'Anda tidak memiliki akses untuk merubah event ini'
+            ], 403);
         }
 
         $event->update($payload);

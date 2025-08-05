@@ -18,6 +18,9 @@ Route::prefix('v1')->group(function () {
         Route::put('/events/{id}', [EventController::class, 'update']);
         Route::delete('/events/{id}', [EventController::class, 'destroy']);
 
+        Route::post('/events/{event}/atendees', [AtendeeController::class, 'store']);
+        Route::delete('/events/{event}/atendees/{atendee}', [AtendeeController::class, 'destroy']);
+
         Route::post('/auth/logout', [AuthController::class, 'logout']);
     });
 
@@ -26,8 +29,6 @@ Route::prefix('v1')->group(function () {
 
     Route::get('/events/{event}/atendees', [AtendeeController::class, 'index']);
     Route::get('/events/{event}/atendees/{atendee}', [AtendeeController::class, 'show']);
-    Route::post('/events/{event}/atendees', [AtendeeController::class, 'store']);
-    Route::delete('/events/{event}/atendees/{atendee}', [AtendeeController::class, 'destroy']);
 });
 
 Route::fallback(function () {
