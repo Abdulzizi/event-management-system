@@ -64,6 +64,8 @@ class AppServiceProvider extends ServiceProvider
             return Response::make($content, $httpCode, ['signature' => $signature]);
         });
 
+
+
         Gate::define('update-event', function ($user, Event $event) {
             return $user->id === $event->user_id;
         });
