@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
-    Route::post('/auth/login', [AuthController::class, 'login']);
+    Route::middleware('throttle:5,3')->group(function () {
+        Route::post('/auth/login', [AuthController::class, 'login']);
+    });
 
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/user', function (Request $request) {
-            return $request->user();
-        });
+    Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
+        // Route::get('/user', function (Request $request) {
+        //     return $request->user();
+        // });
 
         Route::post('/events', [EventController::class, 'store']);
         Route::put('/events/{id}', [EventController::class, 'update']);
