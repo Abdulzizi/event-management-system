@@ -10,4 +10,4 @@ Artisan::command('inspire', function () {
 
 Schedule::call(function () {
     Artisan::call('app:send-event-reminders');
-})->description('Send event reminders')->daily();
+})->description('Send event reminders')->everyMinute();

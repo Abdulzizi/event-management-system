@@ -25,7 +25,7 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::get('/events', [EventController::class, 'index']);
-    Route::get('/events/{id}', [EventController::class, 'show']);
+    Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
 
     Route::get('/events/{event}/atendees', [AtendeeController::class, 'index']);
     Route::get('/events/{event}/atendees/{atendee}', [AtendeeController::class, 'show']);

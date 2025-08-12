@@ -15,6 +15,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
     use HasUuids;
     use HasApiTokens;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
